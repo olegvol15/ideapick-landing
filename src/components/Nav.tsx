@@ -10,6 +10,7 @@ function navigate(to: string) {
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const isHome = typeof window !== 'undefined' && (window.location.pathname === '/' || window.location.pathname === '')
 
   useEffect(() => {
@@ -18,6 +19,26 @@ export default function Nav() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Close menu on outside click
+  useEffect(() => {
+    if (!menuOpen) return
+    const handler = () => setMenuOpen(false)
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
+  }, [menuOpen])
+
+  function handleWaitlist() {
+    setMenuOpen(false)
+    if (isHome) {
+      document.getElementById('final-cta')?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      navigate('/')
+      setTimeout(() => {
+        document.getElementById('final-cta')?.scrollIntoView({ behavior: 'smooth' })
+      }, 400)
+    }
+  }
 
   return (
     <header
@@ -38,29 +59,65 @@ export default function Nav() {
         </a>
 
         <nav className="flex items-center gap-1">
-          <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm text-[#2f5a8a] hover:bg-[#023E8A]/6 hover:text-[#0a3f77] dark:text-[#7ba8c8] dark:hover:bg-white/8 dark:hover:text-[#d0e8fa]" onClick={() => navigate('/about')}>
-            About
-          </Button>
-          <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm text-[#2f5a8a] hover:bg-[#023E8A]/6 hover:text-[#0a3f77] dark:text-[#7ba8c8] dark:hover:bg-white/8 dark:hover:text-[#d0e8fa]" onClick={() => navigate('/pricing')}>
-            Pricing
-          </Button>
+          {/* Desktop links */}
+          <div className="hidden sm:flex items-center gap-1">
+            <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm text-[#2f5a8a] hover:bg-[#023E8A]/6 hover:text-[#0a3f77] dark:text-[#7ba8c8] dark:hover:bg-white/8 dark:hover:text-[#d0e8fa]" onClick={() => navigate('/about')}>
+              About
+            </Button>
+            <Button variant="ghost" size="sm" className="rounded-full px-4 text-sm text-[#2f5a8a] hover:bg-[#023E8A]/6 hover:text-[#0a3f77] dark:text-[#7ba8c8] dark:hover:bg-white/8 dark:hover:text-[#d0e8fa]" onClick={() => navigate('/pricing')}>
+              Pricing
+            </Button>
+          </div>
+
+          {/* Desktop: Join waitlist */}
           <Button
             size="sm"
-            className="ml-1 rounded-full bg-[#0077B6] px-4 text-sm text-white shadow-[0_4px_14px_rgba(0,119,182,0.35)] transition duration-200 hover:-translate-y-px hover:bg-[#0368a0]"
-            onClick={() => {
-              if (isHome) {
-                document.getElementById('final-cta')?.scrollIntoView({ behavior: 'smooth' })
-              } else {
-                navigate('/')
-                setTimeout(() => {
-                  document.getElementById('final-cta')?.scrollIntoView({ behavior: 'smooth' })
-                }, 400)
-              }
-            }}
+            className="hidden sm:inline-flex ml-1 rounded-full bg-[#0077B6] px-4 text-sm text-white shadow-[0_4px_14px_rgba(0,119,182,0.35)] transition duration-200 hover:-translate-y-px hover:bg-[#0368a0]"
+            onClick={handleWaitlist}
           >
             Join waitlist
           </Button>
+
           <ThemeToggle />
+
+          {/* Mobile: hamburger */}
+          <div className="relative sm:hidden" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setMenuOpen((o) => !o)}
+              className="ml-1 flex h-9 w-9 flex-col items-center justify-center gap-[5px] rounded-full hover:bg-[#023E8A]/6 dark:hover:bg-white/8 transition-colors"
+              aria-label="Menu"
+            >
+              <span className={`block h-[2px] w-5 rounded-full bg-[#0c3c76] dark:bg-[#d0e8fa] transition-all duration-200 ${menuOpen ? 'translate-y-[7px] rotate-45' : ''}`} />
+              <span className={`block h-[2px] w-5 rounded-full bg-[#0c3c76] dark:bg-[#d0e8fa] transition-all duration-200 ${menuOpen ? 'opacity-0' : ''}`} />
+              <span className={`block h-[2px] w-5 rounded-full bg-[#0c3c76] dark:bg-[#d0e8fa] transition-all duration-200 ${menuOpen ? '-translate-y-[7px] -rotate-45' : ''}`} />
+            </button>
+
+            {menuOpen && (
+              <div className="absolute right-0 top-12 w-52 rounded-2xl border border-[#023E8A]/12 bg-white/95 py-2 shadow-[0_8px_32px_rgba(2,62,138,0.15)] backdrop-blur-md dark:border-white/8 dark:bg-[#081527]/95">
+                <button
+                  onClick={() => { setMenuOpen(false); navigate('/about') }}
+                  className="w-full px-5 py-3 text-left text-sm font-medium text-[#2f5a8a] hover:bg-[#023E8A]/6 dark:text-[#7ba8c8] dark:hover:bg-white/8"
+                >
+                  About
+                </button>
+                <button
+                  onClick={() => { setMenuOpen(false); navigate('/pricing') }}
+                  className="w-full px-5 py-3 text-left text-sm font-medium text-[#2f5a8a] hover:bg-[#023E8A]/6 dark:text-[#7ba8c8] dark:hover:bg-white/8"
+                >
+                  Pricing
+                </button>
+                <div className="mx-3 my-2 border-t border-[#023E8A]/10 dark:border-white/8" />
+                <div className="px-3 pb-1">
+                  <button
+                    onClick={handleWaitlist}
+                    className="w-full rounded-full bg-[#0077B6] py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(0,119,182,0.35)] hover:bg-[#0368a0]"
+                  >
+                    Join waitlist
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
       </div>
     </header>
