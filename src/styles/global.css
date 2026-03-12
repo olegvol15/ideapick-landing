@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --brand: #ff4714;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-[#eaf5fc] text-[#0f2f56] dark:bg-[#060d19] dark:text-[#d0e8fa];
+    background-image: url('/soft-blue-bg.svg');
+    background-size: cover;
+    background-position: center top;
+    background-attachment: fixed;
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  }
+
+  .dark body {
+    background-image: none;
+  }
+}
+
+@layer components {
+  .reveal-on-scroll {
+    @apply opacity-0 translate-y-10 scale-[0.985] transition-all duration-700 ease-out;
+  }
+
+  .reveal-on-scroll.is-visible {
+    @apply opacity-100 translate-y-0 scale-100;
+  }
+
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -14px, 0) scale(1.03); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ambient-motion {
+    animation: none;
+  }
+}
