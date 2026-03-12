@@ -51,7 +51,7 @@ export default function Hero() {
             Find your next big app idea
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-relaxed text-[#3d628b] dark:text-[#7ba8c8]">
-            Turn one prompt into real product opportunities, backed by live App Store signals.
+            Turn one prompt into real product opportunities - SaaS, AI tools, mobile apps and more - with real market signals.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button
