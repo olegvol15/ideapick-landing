@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import WaitlistForm from './WaitlistForm'
 
-const LAUNCH_DATE = new Date('2026-06-01T00:00:00Z')
+const LAUNCH_DATE = new Date('2026-07-01T00:00:00Z')
 
 function useCountdown(target: Date) {
   const calc = () => {
